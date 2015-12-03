@@ -697,6 +697,7 @@ int find_reserve_block(const char * name,int idx)
 
 	return -1;
 }
+EXPORT_SYMBOL(find_reserve_block);
 
 int find_reserve_block_by_name(const char * name)
 {
@@ -730,6 +731,7 @@ unsigned long long get_reserve_block_addr(int blockid)
 	return addr;
 }
 
+EXPORT_SYMBOL(get_reserve_block_addr);
 unsigned long long get_reserve_block_size(int blockid)
 {
 	if(blockid >= MAX_RESERVE_BLOCK)
@@ -737,6 +739,7 @@ unsigned long long get_reserve_block_size(int blockid)
 	return pReserve_Manager->reserve[blockid].size;
 }
 
+EXPORT_SYMBOL(get_reserve_block_size);
 
 /**
  * early_init_dt_scan_memory - Look for an parse memory nodes
