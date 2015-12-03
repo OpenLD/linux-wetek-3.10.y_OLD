@@ -103,11 +103,6 @@ int codec_power=1;
 unsigned int flag=0;
 //static int num=0;
 
-int output_volume = 100;  // volume control
-audio_tone_control_t audio_tone_control;
-
-#define VOL_CTL(s) ((unsigned int)(((signed short)(s))*(vol)) >> 15) // volume scaling from 0~100
-
 //static int codec_power_switch(struct snd_pcm_substream *substream, unsigned int status);
 
 EXPORT_SYMBOL(aml_i2s_playback_start_addr);
@@ -1101,6 +1096,9 @@ static int aml_pcm_close(struct snd_pcm_substream *substream)
 	return 0;
 }
 
+extern int output_volume; //Volume control
+extern struct mutex m_volume; //Volume mutext
+#define VOL_CTL(s) ((unsigned int)(((signed short)(s))*(vol)) >> 15) //Volume scaling from 0~100
 
 static int aml_pcm_copy_playback(struct snd_pcm_runtime *runtime, int channel,
 		    snd_pcm_uframes_t pos,
@@ -1137,7 +1135,9 @@ static int aml_pcm_copy_playback(struct snd_pcm_runtime *runtime, int channel,
 		    printk("audio data unligned: pos=%d, n=%d, align=%d\n", (int)pos, n, align);
 		}
 
+		mutex_lock(&m_volume);
                 vol = (output_volume * 0x8000) / 100;
+		mutex_unlock(&m_volume);
 
 		for (j = 0; j < n; j += 64) {
 		    for (i = 0; i < 16; i++) {
@@ -1663,15 +1663,6 @@ static void aml_pcm_cleanup_debugfs(void)
 #endif
 
 
-int get_mixer_output_volume(void)
-{
-	return output_volume;
-}
-
-int set_mixer_output_volume(int volume)
-{
-	output_volume = volume;
-}
 
 struct aml_audio_interface aml_i2s_interface = {
     .id = AML_AUDIO_I2S,
