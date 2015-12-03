@@ -325,8 +325,15 @@ static irqreturn_t tsdemux_isr(int irq, void *dev_id)
 #ifndef ENABLE_DEMUX_DRIVER
     u32 int_status = READ_MPEG_REG(STB_INT_STATUS);
 #else
-    int id = (int)dev_id;
-    u32 int_status = id ? READ_MPEG_REG(STB_INT_STATUS_2) : READ_MPEG_REG(STB_INT_STATUS);
+	u32 int_status = 0;
+	
+	int id = (long)dev_id;
+	if (id == 0)
+		int_status = READ_MPEG_REG(STB_INT_STATUS);
+	else if (id == 1)
+		int_status = READ_MPEG_REG(STB_INT_STATUS_2);
+	else if (id == 2)
+		int_status = READ_MPEG_REG(STB_INT_STATUS_3);
 #endif
 
     if (int_status & (1 << NEW_PDTS_READY)) {
