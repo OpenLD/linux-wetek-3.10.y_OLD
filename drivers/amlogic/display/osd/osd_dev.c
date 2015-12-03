@@ -372,10 +372,12 @@ void  osddev_set_gbl_alpha(u32 index,u32 gbl_alpha)
 {
 	osd_set_gbl_alpha_hw(index,gbl_alpha);
 }
+EXPORT_SYMBOL(osddev_set_gbl_alpha);
 u32  osddev_get_gbl_alpha(u32  index)
 {
 	return osd_get_gbl_alpha_hw(index);
 }
+EXPORT_SYMBOL(osddev_get_gbl_alpha);
 void  osddev_suspend(void)
 {
 	osd_suspend_hw();
