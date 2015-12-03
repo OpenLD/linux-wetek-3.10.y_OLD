@@ -81,6 +81,7 @@
 #define MAX_AMSTREAM_PORT_NUM ARRAY_SIZE(ports)
 u32 amstream_port_num;
 u32 amstream_buf_num;
+struct file *p_file = NULL;
 
 #if MESON_CPU_TYPE == MESON_CPU_TYPE_MESONG9TV
 #define NO_VDEC2_INIT 1
@@ -903,7 +904,7 @@ static ssize_t amstream_mpts_write(struct file *file, const char *buf,
 
     return r;
 }
-
+EXPORT_SYMBOL(amstream_mpts_write);
 static ssize_t amstream_mpps_write(struct file *file, const char *buf,
                                    size_t count, loff_t * ppos)
 {
@@ -1198,6 +1199,7 @@ static int amstream_open(struct inode *inode, struct file *file)
         debug_filp = NULL;
     }
 #endif
+	p_file = file;
     mutex_unlock(&amstream_mutex);
     return 0;
 }
@@ -1263,6 +1265,7 @@ static int amstream_release(struct inode *inode, struct file *file)
 
     switch_mod_gate_by_name("demux", 0);
 #endif
+	p_file = NULL;
     mutex_unlock(&amstream_mutex);
     return 0;
 }
@@ -2371,6 +2374,11 @@ stream_buf_t* get_stream_buffer(int id)
 	return &bufs[id];
 }
 
+struct file *get_pfile(void)
+{
+	return p_file;
+}
+EXPORT_SYMBOL(get_pfile);
 EXPORT_SYMBOL(set_vdec_func);
 EXPORT_SYMBOL(set_adec_func);
 EXPORT_SYMBOL(set_trickmode_func);
