@@ -74,8 +74,8 @@ static int meson_cpufreq_verify(struct cpufreq_policy *policy)
     return 0;
 }
 
-#if (defined CONFIG_SMP) && (defined CONFIG_HAS_EARLYSUSPEND)
 static int early_suspend_flag = 0;
+#if (defined CONFIG_SMP) && (defined CONFIG_HAS_EARLYSUSPEND)
 #include <linux/earlysuspend.h>
 static void meson_system_early_suspend(struct early_suspend *h)
 {
