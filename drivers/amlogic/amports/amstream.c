@@ -2378,6 +2378,7 @@ struct file *get_pfile(void)
 {
 	return p_file;
 }
+EXPORT_SYMBOL(get_stream_buffer);
 EXPORT_SYMBOL(get_pfile);
 EXPORT_SYMBOL(set_vdec_func);
 EXPORT_SYMBOL(set_adec_func);
