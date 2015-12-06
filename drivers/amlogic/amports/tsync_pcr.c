@@ -83,10 +83,10 @@ static u32 tsync_pcr_discontinue_threshold = (TIME_UNIT90K * 1.5);
 static u32 tsync_pcr_ref_latency = (TIME_UNIT90K * 0.2);				//TIME_UNIT90K*0.2
 
 // use for pcr valid mode
-static u32 tsync_pcr_max_cache_time = TIME_UNIT90K*1;				//TIME_UNIT90K*2;
+static u32 tsync_pcr_max_cache_time = TIME_UNIT90K*0.3;				//TIME_UNIT90K*2;
 static u32 tsync_pcr_up_cache_time = TIME_UNIT90K*0.8;				//TIME_UNIT90K*1.5;
 static u32 tsync_pcr_down_cache_time = TIME_UNIT90K*0.6;			//TIME_UNIT90K*1.2;
-static u32 tsync_pcr_min_cache_time = TIME_UNIT90K*0.4;			//TIME_UNIT90K*0.8;
+static u32 tsync_pcr_min_cache_time = TIME_UNIT90K*0.1;			//TIME_UNIT90K*0.8;
 
 
 // use for pcr invalid mode
