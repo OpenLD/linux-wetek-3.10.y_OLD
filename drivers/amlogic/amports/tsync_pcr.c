@@ -83,10 +83,10 @@ static u32 tsync_pcr_discontinue_threshold = (TIME_UNIT90K * 1.5);
 static u32 tsync_pcr_ref_latency = (TIME_UNIT90K * 0.2);				//TIME_UNIT90K*0.2
 
 // use for pcr valid mode
-static u32 tsync_pcr_max_cache_time = TIME_UNIT90K*0.3;				//TIME_UNIT90K*2;
+static u32 tsync_pcr_max_cache_time = TIME_UNIT90K*0.45;				//TIME_UNIT90K*2;
 static u32 tsync_pcr_up_cache_time = TIME_UNIT90K*0.8;				//TIME_UNIT90K*1.5;
 static u32 tsync_pcr_down_cache_time = TIME_UNIT90K*0.6;			//TIME_UNIT90K*1.2;
-static u32 tsync_pcr_min_cache_time = TIME_UNIT90K*0.1;			//TIME_UNIT90K*0.8;
+static u32 tsync_pcr_min_cache_time = TIME_UNIT90K*0.32;			//TIME_UNIT90K*0.8;
 
 
 // use for pcr invalid mode
@@ -133,12 +133,22 @@ static u8 tsync_pcr_usepcr=1;
 static u32 first_pcr_record = 0;
 static u8 wait_pcr_count = 0;
 
+static int first_apts = 0;
+static int first_vpts = 0;
 
 #define LTRACE() printk("[%s:%d] \n", __FUNCTION__,__LINE__);
 
 extern int get_vsync_pts_inc_mode(void);
 
 
+void set_pts(int param, int pts)
+{
+	if (!param)
+		first_apts = pts;
+	else if(param)
+		first_vpts = pts;
+}
+EXPORT_SYMBOL(set_pts);
 
 int get_stream_buffer_level(int type){
     stream_buf_t *pbuf=NULL;
@@ -463,6 +473,8 @@ static unsigned long tsync_pcr_check(void)
     if(tsync_get_mode() != TSYNC_MODE_PCRMASTER){
         return res;
     }
+	if (first_apts == 0 || first_vpts == 0)
+			return res;
 
     tsdemux_pcr=tsdemux_pcrscr_get();
     if (tsync_pcr_usepcr == 1) {
@@ -785,6 +797,8 @@ static void tsync_pcr_param_reset(void){
     tsync_pcr_discontinue_waited = 0;                                               // the time waited the v-discontinue to happen
     tsync_pcr_tsdemuxpcr_discontinue = 0;                                       // the boolean value
 
+	first_apts = 0;
+	first_vpts = 0;
     abuf_level=0;
     abuf_size=0;
     vbuf_level=0;
