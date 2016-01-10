@@ -33,7 +33,6 @@
 #include "aml_dai.h"
 #include "aml_pcm.h"
 #include "aml_audio_hw.h"
-#include "aml_alsa_common.h"
 
 #ifdef CONFIG_USE_OF
 #include <linux/of.h>
@@ -309,8 +308,6 @@ static int dummy_codec_audio_probe(struct platform_device *pdev)
         printk(KERN_ERR "ASoC: Platform device allocation failed\n");
         goto err_device_add;
     }
-
-    aml_alsa_create_ctrl(snd_soc_dummy_codec.snd_card, NULL);
 
 	mutex_init(&m_volume);
 	snd_ctl_add(snd_soc_dummy_codec.snd_card, snd_ctl_new1(&pcm_control_pb_vol, NULL));
