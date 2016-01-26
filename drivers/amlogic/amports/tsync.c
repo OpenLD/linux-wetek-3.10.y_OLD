@@ -156,6 +156,7 @@ static int debug_pts_checkout = 0;
 static int debug_vpts = 0;
 static int debug_apts = 0;
 
+static int reset_flag = 0;
 #define M_HIGH_DIFF    2
 #define M_LOW_DIFF     2
 #define PLL_FACTOR   10000
@@ -1074,6 +1075,11 @@ int tsync_set_startsync_mode(int mode)
     return startsync_mode=mode;
 }
 EXPORT_SYMBOL(tsync_set_startsync_mode);
+int set_reset_flag(int enable)
+{
+    return reset_flag = enable;
+}
+EXPORT_SYMBOL(set_reset_flag);
 
 static ssize_t store_pcr_recover(struct class *class,
                                  struct class_attribute *attr,
@@ -1642,9 +1648,34 @@ static ssize_t store_startsync_mode(struct class *class,
     tsync_set_startsync_mode(mode);
     return size;
 }
+static ssize_t show_reset_flag(struct class *class,
+                           struct class_attribute *attr,
+                           char *buf)
+{
+	return sprintf(buf, "%d\n", reset_flag);
+}
+
+static ssize_t store_reset_flag(struct class *class,
+                            struct class_attribute *attr,
+                            const char *buf,
+                            size_t size)
+{
+    unsigned enable;
+    ssize_t r;
+
+    r = sscanf(buf, "%d", &enable);
+    if ((r != 1)) {
+        return -EINVAL;
+    }
+
+    reset_flag = enable;
+
+    return size;
+}
 
 static struct class_attribute tsync_class_attrs[] = {
     __ATTR(pts_video,  S_IRUGO | S_IWUSR | S_IWGRP, show_vpts,    store_vpts),
+	__ATTR(reset_flag,  S_IRUGO | S_IWUSR | S_IWGRP, show_reset_flag,    store_reset_flag),
     __ATTR(pts_audio,  S_IRUGO | S_IWUSR | S_IWGRP, show_apts,    store_apts),
     __ATTR(dobly_av_sync,  S_IRUGO | S_IWUSR | S_IWGRP, dobly_show_sync,    dobly_store_sync),
     __ATTR(pts_pcrscr, S_IRUGO | S_IWUSR | S_IWGRP, show_pcrscr,  store_pcrscr),
