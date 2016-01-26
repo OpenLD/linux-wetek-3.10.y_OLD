@@ -160,6 +160,7 @@ static inline int strip_drv_header(struct ath9k_htc_priv *priv,
 	struct ath_common *common = ath9k_hw_common(priv->ah);
 	struct ath9k_htc_tx_ctl *tx_ctl;
 	int slot;
+	int hdrlen, padsize;
 
 	tx_ctl = HTC_SKB_CB(skb);
 
@@ -504,6 +505,15 @@ send_mac80211:
 	spin_unlock_bh(&priv->tx.tx_lock);
 
 	ath9k_htc_tx_clear_slot(priv, slot);
+
+	/* Remove padding before handing frame back to mac80211 */
+	hdrlen = ieee80211_get_hdrlen_from_skb(skb);
+
+	padsize = hdrlen & 3;
+	if (padsize && skb->len > hdrlen + padsize) {
+		memmove(skb->data + padsize, skb->data, hdrlen);
+		skb_pull(skb, padsize);
+	}
 
 	/* Remove padding before handing frame back to mac80211 */
 	hdrlen = ieee80211_get_hdrlen_from_skb(skb);

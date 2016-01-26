@@ -700,6 +700,7 @@ static  int amstream_port_init(stream_port_t *port)
             printk("tsdemux_init  failed\n");
             goto error4;
         }
+
         tsync_pcr_start();
     }
     if (port->type & PORT_TYPE_MPPS) {
