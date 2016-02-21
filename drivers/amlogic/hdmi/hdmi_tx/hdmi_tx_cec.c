@@ -737,7 +737,7 @@ static irqreturn_t cec_isr_handler(int irq, void *dev_instance)
     udelay(100); //Delay execution a little. This fixes an issue when HDMI CEC stops working after a while.
     //cec_disable_irq();
 #if MESON_CPU_TYPE >= MESON_CPU_TYPE_MESON8
-    unsigned int intr_stat;
+    unsigned int intr_stat = 0;
     intr_stat = aml_read_reg32(P_AO_CEC_INTR_STAT);
     if (cec_msg_dbg_en  == 1)
     {
@@ -2137,6 +2137,9 @@ void cec_usrcmd_set_dispatch(const char * buf, size_t count)
             break;
         case PING_TV:    //0x1a LA : For TV CEC detected.
             detect_tv_support_cec(param[1]);
+            break;
+        case DEVICE_MENU_CONTROL:    //0x1b
+            cec_usrcmd_device_menu_control(param[1], param[2]);
             break;
         default:
             break;
