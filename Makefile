@@ -240,8 +240,7 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 	  else if [ -x /bin/bash ]; then echo /bin/bash; \
 	  else echo sh; fi ; fi)
 
-GRAPHITE_FLAGS	= -fgraphite -floop-flatten -floop-parallelize-all \
-		  -ftree-loop-linear -floop-interchange -floop-strip-mine -floop-block
+GRAPHITE_FLAGS	= -floop-flatten
 
 HOSTCC       = gcc
 HOSTCXX      = g++
